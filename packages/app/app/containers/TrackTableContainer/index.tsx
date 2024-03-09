@@ -16,6 +16,7 @@ import * as queueActions from '../../actions/queue';
 import * as playerActions from '../../actions/player';
 import * as playlistActions from '../../actions/playlists';
 import * as favoritesActions from '../../actions/favorites';
+import * as blacklistActions from '../../actions/blacklist';
 import { favoritesSelectors } from '../../selectors/favorites';
 import { safeAddUuid } from '../../actions/helpers';
 
@@ -71,6 +72,10 @@ function TrackTableContainer<T extends Track> ({
     dispatch(favoritesActions.addFavoriteTrack(track));
   }, [dispatch]);
 
+  const onAddToBlacklist = useCallback((track: Track) => {
+    dispatch(blacklistActions.addToBlacklist(track));
+  }, [dispatch]);
+
   const onRemoveFromFavorites = useCallback((track: Track) => {
     dispatch(favoritesActions.removeFavoriteTrack(track));
   }, [dispatch]);
@@ -117,6 +122,7 @@ function TrackTableContainer<T extends Track> ({
     textAddToPlaylist: popupTranstation('add-to-playlist'),
     textCreatePlaylist: popupTranstation('create-playlist'),
     textAddToDownloads: popupTranstation('download'),
+    textAddToBlacklist: popupTranstation('blacklist'),
     createPlaylistDialog: {
       title: popupTranstation('create-playlist-dialog-title'),
       placeholder: popupTranstation('create-playlist-dialog-placeholder'),
@@ -151,6 +157,7 @@ function TrackTableContainer<T extends Track> ({
     onPlayNext={onPlayNext}
     onPlayAll={onPlayAll}
     onAddToFavorites={Boolean(displayAddToFavorites) && onAddToFavorites}
+    onAddToBlacklist={onAddToBlacklist}
     onRemoveFromFavorites={onRemoveFromFavorites}
     onAddToDownloads={Boolean(displayAddToDownloads) && onAddToDownloads}
     onAddToPlaylist={onAddToPlaylist}

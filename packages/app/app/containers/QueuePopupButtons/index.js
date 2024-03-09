@@ -12,6 +12,7 @@ import * as QueueActions from '../../actions/queue';
 import * as FavoritesActions from '../../actions/favorites';
 import * as ToastActions from '../../actions/toasts';
 import * as PlaylistsActions from '../../actions/playlists';
+import * as BlacklistActions from '../../actions/blacklist';
 import { safeAddUuid } from '../../actions/helpers';
 import { normalizeTrack } from '../../utils';
 import { addTrackToPlaylist } from '../../components/PlayQueue/QueueMenu/QueueMenuMore';
@@ -23,10 +24,12 @@ const QueuePopupButtons = ({
   withAddToFavorites,
   withAddToDownloads,
   withAddToPlaylist,
+  withAddToBlacklist,
   handlePlayNow,
   handleAddFavorite,
   handleAddToDownloads,
-  handleAddToPlaylist
+  handleAddToPlaylist,
+  handleAddToBlacklist
 }) => (
   <>
     {withPlayNow && (
@@ -69,6 +72,14 @@ const QueuePopupButtons = ({
         label='Download'
       />
     )}
+    {withAddToBlacklist && (
+      <PopupButton
+        onClick={handleAddToBlacklist}
+        ariaLabel='Blacklist this track'
+        icon='lock'
+        label='Blacklist'
+      />
+    )}
   </>
 );
 
@@ -86,6 +97,7 @@ const mapDispatchToProps = dispatch => ({
   downloadsActions: bindActionCreators(DownloadsActions, dispatch),
   queueActions: bindActionCreators(QueueActions, dispatch),
   favoritesActions: bindActionCreators(FavoritesActions, dispatch),
+  blacklistActions: bindActionCreators(BlacklistActions, dispatch),
   playlistsActions: bindActionCreators(PlaylistsActions, dispatch),
   toastActions: bindActionCreators(ToastActions, dispatch)
 });
@@ -104,7 +116,8 @@ QueuePopupButtons.propTypes = {
   withPlayNow: PropTypes.bool,
   withAddToFavorites: PropTypes.bool,
   withAddToDownloads: PropTypes.bool,
-  withAddToPlaylist: PropTypes.bool
+  withAddToPlaylist: PropTypes.bool,
+  withAddToBlacklist: PropTypes.bool
 };
 
 QueuePopupButtons.defaultProps = {
@@ -115,7 +128,8 @@ QueuePopupButtons.defaultProps = {
   withAddToPlaylist: true,
   withPlayNow: true,
   withAddToFavorites: true,
-  withAddToDownloads: true
+  withAddToDownloads: true,
+  withAddToBlacklist: true
 };
 
 export default compose(
@@ -137,6 +151,21 @@ export default compose(
       toastActions.info(
         'Favorite track added',
         `${track.artist} - ${track.name} has been added to favorites.`,
+        <img src={getThumbnail(normalizedTrack)} />,
+        settings
+      );
+    },
+    handleAddToBlacklist: ({
+      track,
+      settings,
+      blacklistActions,
+      toastActions
+    }) => () => {
+      const normalizedTrack = normalizeTrack(track);
+      blacklistActions.addToBlacklist(normalizedTrack);
+      toastActions.info(
+        'Track added to blacklist',
+        `${track.artist} - ${track.name} has been added to blacklist.`,
         <img src={getThumbnail(normalizedTrack)} />,
         settings
       );
