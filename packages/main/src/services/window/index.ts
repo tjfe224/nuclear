@@ -148,6 +148,10 @@ class Window {
     this.browserWindow.setSize(0, 0, true);
   }
 
+  setCustomSize(width: number, height: number){
+    this.browserWindow.setSize(width, height, true);
+  }
+
   restoreDefaultSize() {
     this.browserWindow.setSize(this.defaultWidth, this.defaultHeight, true);
   }

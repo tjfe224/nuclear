@@ -11,6 +11,8 @@ import { useMiniPlayerSettings } from './hooks';
 import { ipcRenderer } from 'electron';
 import { IpcEvents } from '@nuclear/core';
 
+let miniPlayerWidth=0;
+let miniPlayerHeight=0;
 
 const MiniPlayerContainer: React.FC = () => {
   const seekbarProps = useSeekbarProps();
@@ -25,8 +27,21 @@ const MiniPlayerContainer: React.FC = () => {
 
   useEffect(() => {
     if (isMiniPlayerEnabled) {
-      ipcRenderer.send(IpcEvents.WINDOW_MINIFY);
+      if (miniPlayerWidth !== 0 || miniPlayerHeight !== 0){
+        ipcRenderer.send(
+          IpcEvents.WINDOW_MINIFY_SAVE, 
+          [miniPlayerWidth, miniPlayerHeight]
+        );
+      } else {
+        miniPlayerWidth = 1;
+        miniPlayerHeight = 1;
+        ipcRenderer.send(IpcEvents.WINDOW_MINIFY);
+      }
     } else {
+      if (miniPlayerWidth !== 0 || miniPlayerHeight !== 0){
+        miniPlayerWidth = window.innerWidth;
+        miniPlayerHeight = window.innerHeight;
+      }
       ipcRenderer.send(IpcEvents.WINDOW_RESTORE);
     }
   }, [isMiniPlayerEnabled]);

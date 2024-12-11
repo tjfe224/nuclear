@@ -46,6 +46,11 @@ class SettingsIpcCtrl {
     this.window.minify();
   }
 
+  @ipcEvent(IpcEvents.WINDOW_MINIFY_SAVE)
+  onMinifySave(params, size) {
+    this.window.setCustomSize(size[0], size[1]);
+  }
+
   @ipcEvent(IpcEvents.WINDOW_RESTORE)
   onRestore() {
     this.window.restoreDefaultSize();
